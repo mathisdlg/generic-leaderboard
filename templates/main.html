@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'components/base.html' %}
 
-    <title>{% block title %}Leaderboard{% endblock %}</title>
-    {% load static %}
+{% block h1 %}Home{% endblock %}
 
-    <!-- Bootstrap -->
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-</head>
-<body>
-    {% include 'components/navbar.html' %}
-    
-    <div class="container">
-        <h1>Leaderboard</h1>
-        {% block content %}
-        {% endblock %}
-    </div>
-</body>
-</html>
+{% block content %}
+    <p>Welcome to the leaderboard application!</p>
+{% endblock %}
