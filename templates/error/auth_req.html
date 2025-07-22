@@ -1,0 +1,11 @@
+{% extends "components/base.html" %}
+
+{% block title %}Authentication Required{% endblock %}
+
+{% block h1 %}Authentication Required{% endblock %}
+
+{% block content %}
+    <p>You must be logged in to view this page.</p>
+
+    <button class="btn btn-primary" onclick="window.location.href='{% url 'login' %}'">Login/Create Account</button>
+{% endblock %}

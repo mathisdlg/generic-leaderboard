@@ -1,0 +1,28 @@
+{% extends "components/base.html" %}
+
+{% block title %}Create new user{% endblock %}
+
+{% block h1 %}Create new user{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'create_user' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="Not required">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'main' %}'">Back to home</button>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "components/base.html" %}
+
+{% block title %}Invalid Input{% endblock %}
+
+{% block content %}
+    {% block h1 %} Invalid Input{% endblock %}
+    <p>{{ message }}</p>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'create_leaderboard' %}'">Back to Create Leaderboard</button>
+{% endblock %}

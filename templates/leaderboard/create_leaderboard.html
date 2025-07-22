@@ -1,0 +1,88 @@
+{% extends "components/base.html" %}
+
+{% block title %}Create leaderboard{% endblock %}
+
+{% block h1 %}Create Leaderboard{% endblock %}
+
+{% block scripts %}
+<script>
+    var users = [
+        {% for user in users %}
+            { id: "{{ user.id }}", username: "{{ user.username }}" },
+        {% endfor %}
+    ];
+
+    var selectedUsers = [];
+
+    function updateSelectedUsers(id) {
+        const sharedWithUser = document.querySelector('input[name="shared_with_users"]');
+        const validationList = document.getElementById('selected_users');
+
+        if (selectedUsers.includes(id)) {
+            selectedUsers = selectedUsers.filter(userId => userId !== id);
+        } else {
+            selectedUsers.push(id);
+        }
+
+        validationList.innerHTML = '';
+        selectedUsers.forEach(userId => {
+            const user = users.find(u => u.id === String(userId));
+            if (user) {
+                const li = document.createElement('li');
+                li.innerHTML = `<p>${user.username}</p>`;
+                validationList.appendChild(li);
+            }
+        });
+
+        sharedWithUser.value = selectedUsers.join(',');
+    }
+
+    function filterUsers() {
+        const input = document.getElementById('search_users').value.toLowerCase();
+        const userList = document.getElementById('user_list');
+        userList.innerHTML = '';
+        const filteredUsers = users.filter(user => user.username.toLowerCase().includes(input)).slice(0, 5);
+        filteredUsers.forEach(user => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">
+                    ${user.username}
+                </button>
+            `;
+            userList.appendChild(li);
+        });
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'create_leaderboard' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Leaderboard Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="search_users">Share with users:</label>
+            <input type="text" id="search_users" placeholder="Search users..." onkeyup="filterUsers()"/>
+            <ul id="user_list" class="list-unstyled"></ul>
+
+            <ul class="list-unstyled" id="selected_users"></ul>
+            <input type="hidden" name="shared_with_users" value="" />
+        </div>
+
+        <div class="form-group">
+            <label for="public">Public Leaderboard:</label>
+            <input type="checkbox" id="public" name="public" value="true" title="Everyone will be able to see this leaderboard">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Leaderboard</button>
+    </form>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to Leaderboards</button>
+{% endblock %}

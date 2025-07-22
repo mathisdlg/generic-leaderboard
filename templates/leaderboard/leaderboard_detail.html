@@ -1,0 +1,44 @@
+{% extends "components/base.html" %}
+
+{% block title %}Leaderboard Detail{% endblock %}
+
+{% block h1 %}{{ leaderboard.name }}{% endblock %}
+
+{% block content %}
+    <h2>Entries</h2>
+    <button class="btn btn-primary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to Leaderboards</button>
+    <label for="nb_by_page">Entries per page:</label>
+    <input type="number" id="nb_by_page" name="nb_by_page" value="{{ nb_by_page }}" min="1" max="100" onchange="window.location.href='?page={{ page_number }}&nb_by_page=' + this.value">
+    <ul>
+        {% for entry in entries %}
+            <li>{{ entry.user.username }}: {{ entry.score }}</li>
+        {% empty %}
+            <li>No entries yet.</li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        {% if page_number > 1 %}
+            <a href="?page={{ page_number|add:-1 }}&nb_by_page={{ nb_by_page }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page_number }} of {{ nb_pages }}</span>
+        {% if page_number < nb_pages %}
+            <a href="?page={{ page_number|add:1 }}&nb_by_page={{ nb_by_page }}">Next</a>
+        {% endif %}
+    </div>
+    <h2>Leaderboard Information</h2>
+    <p>Created by: {{ leaderboard.creator.username }}</p>
+    <p>Description: {{ leaderboard.description }}</p>
+    <p>Public: {{ leaderboard.is_public|yesno:"Yes,No" }}</p>
+    <p>Shared with users:
+        {% if leaderboard.shared_with_users.all %}
+            <ul>
+                {% for user in leaderboard.shared_with_users.all %}
+                    <li>{{ user.username }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            None
+        {% endif %}
+    </p>
+{% endblock %}
