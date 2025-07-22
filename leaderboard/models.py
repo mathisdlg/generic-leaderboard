@@ -12,9 +12,12 @@ class LeaderboardEntry(models.Model):
 
 
 class Leaderboard(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_leaderboards')
     entries = models.ManyToManyField(LeaderboardEntry)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    shared_with_users = models.ManyToManyField(User, related_name='shared_leaderboards', blank=True)
+    public = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -26,6 +29,27 @@ class Leaderboard(models.Model):
         start = (page_number - 1) * entries_per_page
         end = start + entries_per_page
         return self.entries.order_by('-score')[start:end]
+    
+    def get_nb_pages(self, entries_per_page=10):
+        return (self.entries.count() // (entries_per_page+1)) + 1
+
+    def have_access(self, user):
+        if not user.is_authenticated:
+            return False
+        elif user.is_superuser:
+            return True
+        elif self.creator == user:
+            return True
+        elif self.public:
+            return True
+        else:
+          return self.shared_with_users.filter(id=user.id).exists()
+    
+    def is_mine(self, user):
+        return self.creator == user
+    
+    def is_public(self):
+        return self.public
 
 
 class RealiseWith(models.Model):
