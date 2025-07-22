@@ -1,0 +1,22 @@
+{% extends "components/base.html" %}
+
+{% block title %}Create option{% endblock %}
+
+{% block h1 %}Create Option{% endblock %}
+
+{% block content %}
+
+<form method="post" action="{% url 'add_option' leaderboard.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="name">Option Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" name="description"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Option</button>
+</form>
+
+{% endblock %}
