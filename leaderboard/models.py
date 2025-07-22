@@ -55,6 +55,7 @@ class Leaderboard(models.Model):
 class RealiseWith(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    belongs_to = models.ForeignKey(Leaderboard, on_delete=models.CASCADE, related_name='realise_with_options')
     
     def __str__(self):
         return self.name
