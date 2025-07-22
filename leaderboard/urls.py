@@ -1,9 +1,21 @@
 from django.contrib import admin
 from django.urls import path, include
-import leaderboard.views as leaderboard_views
+import leaderboard.leaderboard_views as leaderboard_views
+import leaderboard.user_views as user_views
 
 urlpatterns = [
     path('', leaderboard_views.main_view, name='main'),
-    # base connection page for user
-    path('account/', include('django.contrib.auth.urls')),
+    path('leaderboard/', leaderboard_views.leaderboard_list, name='leaderboards_list'),
+    path('leaderboard/<int:leaderboard_id>/', leaderboard_views.leaderboard_detail, name='leaderboard_detail'),
+    path('leaderboard/create/', leaderboard_views.create_leaderboard, name='create_leaderboard'),
+    # path('leaderboard/<int:leaderboard_id>/add_entry/', leaderboard_views.add_entry, name='add_entry'),
+    # path('leaderboard/<int:leaderboard_id>/edit/', leaderboard_views.edit_leaderboard, name='edit_leaderboard'),
+    # path('leaderboard/<int:leaderboard_id>/delete/', leaderboard_views.delete_leaderboard, name='delete_leaderboard'),
+    # path('leaderboard/<int:leaderboard_id>/share/', leaderboard_views.share_leaderboard, name='share_leaderboard'),
+    # path('leaderboard/<int:leaderboard_id>/unshare/', leaderboard_views.unshare_leaderboard, name='unshare_leaderboard'),
+    path('accounts/create_user/', user_views.create_user, name='create_user'),
+    path('accounts/profile/', user_views.profile_view, name='profile'),
+    path('accounts/edit_profile/', user_views.edit_profile, name='edit_profile'),
+    path('accounts/logout/', user_views.logout, name='logout'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
