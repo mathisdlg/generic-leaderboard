@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from leaderboard.models import Leaderboard, LeaderboardEntry
+from leaderboard.models import Leaderboard, LeaderboardEntry, RealiseWith
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
@@ -35,6 +35,8 @@ def leaderboard_detail(request, leaderboard_id):
         nb_by_page = 10
     entries = leaderboard.get_page(page_number=int(page_number), entries_per_page=int(nb_by_page))
     nb_pages = leaderboard.get_nb_pages()
+    
+    options = RealiseWith.objects.filter(belongs_to=leaderboard)
 
     return render(request, 'leaderboard/leaderboard_detail.html', {
         'leaderboard': leaderboard,
@@ -42,6 +44,7 @@ def leaderboard_detail(request, leaderboard_id):
         'page_number': page_number,
         'nb_pages': nb_pages,
         'nb_by_page': nb_by_page,
+        'options': options,
     })
     
 @login_required

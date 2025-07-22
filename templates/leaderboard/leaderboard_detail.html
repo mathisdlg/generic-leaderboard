@@ -8,9 +8,11 @@
     <a class="btn btn-primary" href="{% url 'edit_leaderboard' leaderboard.id %}">Edit Leaderboard</a>
     <a class="btn btn-danger" href="{% url 'delete_leaderboard' leaderboard.id %}">Delete Leaderboard</a>
     <h2>Entries</h2>
-    <button class="btn btn-primary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to Leaderboards</button>
+    <a class="btn btn-primary" href="{% url 'leaderboards_list' %}">Back to leaderboards</a>
+    <a class="btn btn-primary" href="{% url 'add_entry' leaderboard.id %}">Add Entry</a>
     <label for="nb_by_page">Entries per page:</label>
     <input type="number" id="nb_by_page" name="nb_by_page" value="{{ nb_by_page }}" min="1" max="100" onchange="window.location.href='?page={{ page_number }}&nb_by_page=' + this.value">
+
     <ul>
         {% for entry in entries %}
             <li>{{ entry.user.username }}: {{ entry.score }}</li>
@@ -28,6 +30,25 @@
             <a href="?page={{ page_number|add:1 }}&nb_by_page={{ nb_by_page }}">Next</a>
         {% endif %}
     </div>
+
+    <h2>Options</h2>
+    <a class="btn btn-primary" href="{% url 'add_option' leaderboard.id %}">Add Option</a>
+    <ul class="list-unstyled">
+        {% for option in options %}
+            <li>
+                {% if option.description %}
+                    {{ option.name }}: {{ option.description }}
+                {% else %}
+                    {{ option.name }}
+                {% endif %}
+                <a class="btn btn-secondary" href="{% url 'edit_option' leaderboard.id option.id %}">Edit</a>
+                <a class="btn btn-danger" href="{% url 'delete_option' leaderboard.id option.id %}">Delete</a>
+            </li>
+        {% empty %}
+            <li>No options available.</li>
+        {% endfor %}
+    </ul>
+
     <h2>Leaderboard Information</h2>
     <p>Created by: {{ leaderboard.creator.username }}</p>
     <p>Description: {{ leaderboard.description }}</p>
