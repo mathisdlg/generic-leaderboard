@@ -19,8 +19,8 @@ urlpatterns = [
     # path('leaderboard/<int:leaderboard_id>/entry/<int:entry_id>/delete/', entry_views.delete_entry, name='delete_entry'),
     
     path('leaderboard/<int:leaderboard_id>/option/add/', option_views.add_option, name='add_option'),
-    # path('leaderboard/<int:leaderboard_id>/option/<int:option_id>/edit/', option_views.edit_option, name='edit_option'),
-    # path('leaderboard/<int:leaderboard_id>/option/<int:option_id>/delete/', option_views.delete_option, name='delete_option'),
+    path('leaderboard/<int:leaderboard_id>/option/<int:option_id>/edit/', option_views.edit_option, name='edit_option'),
+    path('leaderboard/<int:leaderboard_id>/option/<int:option_id>/delete/', option_views.delete_option, name='delete_option'),
 
     path('accounts/create_user/', user_views.create_user, name='create_user'),
     path('accounts/profile/', user_views.profile_view, name='profile'),

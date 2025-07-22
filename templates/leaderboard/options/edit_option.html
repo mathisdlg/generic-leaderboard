@@ -1,0 +1,22 @@
+{% extends "components/base.html" %}
+
+{% block title %}Edit Option{% endblock %}
+
+{% block h1 %}Edit Option: {{ option.name }}{% endblock %}
+
+{% block content %}
+
+<form method="post" action="{% url 'edit_option' leaderboard.id option.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="name">Option Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ option.name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" name="description">{{ option.description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+{% endblock %}

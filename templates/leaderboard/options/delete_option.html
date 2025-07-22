@@ -1,0 +1,19 @@
+{% extends "components/base.html" %}
+
+{% block title %}Delete option{% endblock %}
+
+{% block h1 %}Delete Option: {{ option.name }}{% endblock %}
+
+{% block content %}
+    <h2>Are you sure you want to delete this option?</h2>
+    <p><strong>Option Name:</strong> {{ option.name }}</p>
+    {% if option.description %}
+        <p><strong>Description:</strong> {{ option.description }}</p>
+    {% endif %}
+    
+    <form method="post" action="{% url 'delete_option' leaderboard.id option.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Option</button>
+        <a class="btn btn-secondary" href="{% url 'leaderboard_detail' leaderboard.id %}">Cancel</a>
+    </form>
+{% endblock %}
