@@ -5,6 +5,8 @@
 {% block h1 %}{{ leaderboard.name }}{% endblock %}
 
 {% block content %}
+    <a class="btn btn-primary" href="{% url 'edit_leaderboard' leaderboard.id %}">Edit Leaderboard</a>
+    <a class="btn btn-danger" href="{% url 'delete_leaderboard' leaderboard.id %}">Delete Leaderboard</a>
     <h2>Entries</h2>
     <button class="btn btn-primary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to Leaderboards</button>
     <label for="nb_by_page">Entries per page:</label>

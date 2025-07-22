@@ -29,7 +29,10 @@
             const user = users.find(u => u.id === String(userId));
             if (user) {
                 const li = document.createElement('li');
-                li.innerHTML = `<p>${user.username}</p>`;
+                li.innerHTML = `
+                    <p>${user.username}</p>
+                    <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers('${user.id}')">Remove</button>
+                `;
                 validationList.appendChild(li);
             }
         });
@@ -78,11 +81,11 @@
         </div>
 
         <div class="form-group">
-            <label for="public">Public Leaderboard:</label>
+            <label for="public">Public leaderboard:</label>
             <input type="checkbox" id="public" name="public" value="true" title="Everyone will be able to see this leaderboard">
         </div>
 
-        <button type="submit" class="btn btn-primary">Create Leaderboard</button>
+        <button type="submit" class="btn btn-primary">Create leaderboard</button>
     </form>
-    <button class="btn btn-secondary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to Leaderboards</button>
+    <button class="btn btn-secondary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to leaderboards</button>
 {% endblock %}

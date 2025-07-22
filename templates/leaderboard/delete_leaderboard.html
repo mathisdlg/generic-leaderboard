@@ -1,0 +1,14 @@
+{% extends "components/base.html" %}
+
+{% block title %}Delete leaderboard{% endblock %}
+
+{% block h1 %}Delete Leaderboard: {{ leaderboard.name }}{% endblock %}
+
+{% block content %}
+    <p>Are you sure you want to delete the leaderboard "{{ leaderboard.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a class="btn btn-secondary" href="{% url 'leaderboard_detail' leaderboard.id %}">Cancel</a>
+    </form>
+{% endblock %}
