@@ -63,7 +63,7 @@ def create_leaderboard(request):
 
         leaderboard = Leaderboard.objects.create(creator=request.user, name=name, description=description, public=public)
         leaderboard.shared_with_users.set(shared_with)
-        return render(request, 'leaderboard/leaderboard_detail.html', {'leaderboard': leaderboard})
+        return redirect('leaderboard_detail', leaderboard_id=leaderboard.id)
 
     return render(request, 'leaderboard/create_leaderboard.html', {'users': users})
 
