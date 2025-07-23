@@ -15,7 +15,12 @@
 
     <ul>
         {% for entry in entries %}
-            <li>{{ entry.user.username }}: {{ entry.score }}</li>
+            {% if entry.realise_with.all %}
+                <li>{{ entry.user.username }}: {{ entry.score }} (Realised with: {{ entry.realise_with.all|join:", " }})</li>
+            {% else %}
+                <li>{{ entry.user.username }}: {{ entry.score }}</li>
+            {% endif %}
+            <a class="btn btn-danger" href="{% url 'delete_entry' leaderboard.id entry.id %}">Delete Entry</a>
         {% empty %}
             <li>No entries yet.</li>
         {% endfor %}

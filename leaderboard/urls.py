@@ -16,7 +16,7 @@ urlpatterns = [
     
     path('leaderboard/<int:leaderboard_id>/entry/add/', entry_views.add_entry, name='add_entry'),
     # path('leaderboard/<int:leaderboard_id>/entry/<int:entry_id>/edit/', entry_views.edit_entry, name='edit_entry'),
-    # path('leaderboard/<int:leaderboard_id>/entry/<int:entry_id>/delete/', entry_views.delete_entry, name='delete_entry'),
+    path('leaderboard/<int:leaderboard_id>/entry/<int:entry_id>/delete/', entry_views.delete_entry, name='delete_entry'),
     
     path('leaderboard/<int:leaderboard_id>/option/add/', option_views.add_option, name='add_option'),
     path('leaderboard/<int:leaderboard_id>/option/<int:option_id>/edit/', option_views.edit_option, name='edit_option'),
