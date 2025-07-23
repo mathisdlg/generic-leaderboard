@@ -35,7 +35,7 @@
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <p>${user.username}</p>
-                    <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers('${user.id}')">Remove</button>
+                    <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">Remove</button>
                 `;
                 validationList.appendChild(li);
             }
@@ -84,7 +84,7 @@
                 {% for user in leaderboard.shared_with_users.all %}
                     <li>
                         <p>{{ user.username }}</p>
-                        <button type="button" class="btn btn-secondary" value="{{ user.id }}" onclick="updateSelectedUsers('{{ user.id }}')">Remove</button>
+                        <button type="button" class="btn btn-secondary" value="{{ user.id }}" onclick="updateSelectedUsers({{ user.id }})">Remove</button>
                     </li>
                 {% endfor %}
             </ul>
