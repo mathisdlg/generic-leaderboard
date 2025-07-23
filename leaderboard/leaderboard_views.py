@@ -23,7 +23,6 @@ def leaderboard_detail(request, leaderboard_id):
     except Leaderboard.DoesNotExist:
         return render(request, 'error/404.html', status=404, context={'message': 'Leaderboard not found'})
     
-    print(leaderboard.public)
     if not request.user.is_authenticated and not leaderboard.public:
         return render(request, 'error/auth_req.html')
 
