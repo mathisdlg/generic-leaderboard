@@ -11,13 +11,13 @@ def add_entry(request, leaderboard_id):
     
     if request.method == "POST":
         name = request.POST.get('name')
-        description = request.POST.get('description', None)
+        score = request.POST.get('value')
         option_ids = request.POST.getlist('options', [])
 
         if name:
-            entry = LeaderboardEntry(name=name, description=description, belongs_to=leaderboard)
+            entry = LeaderboardEntry(name=name, score=score, realise_with=RealiseWith.objects.filter(id__in=option_ids))
             entry.save()
-            entry.options.set(RealiseWith.objects.filter(id__in=option_ids))
+            leaderboard.entries.add(entry)
             return redirect('leaderboard_detail', leaderboard_id=leaderboard.id)
 
     return render(request, "leaderboard/entries/add_entry.html", {"leaderboard": leaderboard})
