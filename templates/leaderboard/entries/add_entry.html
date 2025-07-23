@@ -4,13 +4,65 @@
 
 {% block h1 %}Add Entries to {{ leaderboard.name }}{% endblock %}
 
+{% block scripts %}
+<script>
+    var options = [
+        {% for option in options %}
+            { id: "{{ option.id }}", name: "{{ option.name }}" },
+        {% endfor %}
+    ];
+
+    var selectedOptions = [];
+
+    function updateSelectedOptions(id) {
+        const realiseWithOption = document.querySelector('input[name="realise_with_options"]');
+        const validationList = document.getElementById('selected_options');
+
+        if (selectedOptions.includes(id)) {
+            selectedOptions = selectedOptions.filter(optionId => optionId !== id);
+        } else {
+            selectedOptions.push(id);
+        }
+
+        console.log(selectedOptions);
+
+        validationList.innerHTML = '';
+        selectedOptions.forEach(optionId => {
+            const option = options.find(o => o.id === String(optionId));
+            if (option) {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <p>${option.name}</p>
+                    <button type="button" class="btn btn-secondary" value="${option.id}" onclick="updateSelectedOptions(${option.id})">Remove</button>
+                `;
+                validationList.appendChild(li);
+            }
+        });
+
+        realiseWithOption.value = selectedOptions.join(',');
+    }
+
+    function filterOptions() {
+        const input = document.getElementById('search_option').value.toLowerCase();
+        const optionList = document.getElementById('option_list');
+        optionList.innerHTML = '';
+        const filteredOptions = options.filter(option => option.name.toLowerCase().includes(input)).slice(0, 5);
+        filteredOptions.forEach(option => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <button type="button" class="btn btn-secondary" value="${option.id}" onclick="updateSelectedOptions(${option.id})">
+                    ${option.name}
+                </button>
+            `;
+            optionList.appendChild(li);
+        });
+    }
+</script>
+{% endblock %}
+
 {% block content %}
 <form method="post" action="{% url 'add_entry' leaderboard.id %}">
     {% csrf_token %}
-    <div class="form-group">
-        <label for="name">Entry Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-    </div>
     <div class="form-group">
         <label for="value">Value</label>
         <input type="text" class="form-control" id="value" name="value" required>
@@ -20,13 +72,13 @@
         <textarea class="form-control" id="description" name="description"></textarea>
     </div>
     <div class="form-group">
-        <label for="options">Options</label>
-        <select multiple class="form-control" id="options" name="options">
-            {% for option in leaderboard.options.all %}
-                <option value="{{ option.id }}">{{ option.name }}</option>
-            {% endfor %}
-        </select>
-    </div>
+            <label for="search_option">Realise with:</label>
+            <input type="text" id="search_option" placeholder="Search options..." onkeyup="filterOptions()"/>
+            <ul id="option_list" class="list-unstyled"></ul>
+
+            <ul class="list-unstyled" id="selected_options"></ul>
+            <input type="hidden" name="realise_with_options" value="" />
+        </div>
     <button type="submit" class="btn btn-primary">Add Entry</button>
 </form>
 {% endblock %}
