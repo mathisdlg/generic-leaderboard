@@ -18,3 +18,7 @@ pip install -r requirements.txt
 # Linux
 source .venv/bin/activate
 ```
+
+``` bash
+python manage.py runserver
+```
