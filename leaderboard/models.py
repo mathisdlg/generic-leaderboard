@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 # Create your models here.
 class LeaderboardEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.IntegerField()
-    realise_with = models.ForeignKey('RealiseWith', on_delete=models.CASCADE, null=True, blank=True)
+    score = models.CharField(max_length=100)
+    # realise with can be multiple
+    realise_with = models.ManyToManyField('RealiseWith', blank=True)
 
     def __str__(self):
-        return f"{self.user.username}: {self.score}{f" ({self.realise_with.name})" if self.realise_with else ''}"
+        return f"{self.user.username}: {self.score}{f" ({', '.join(rw.name for rw in self.realise_with.all())})" if self.realise_with.exists() else ''}"
 
 
 class Leaderboard(models.Model):
