@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 class LeaderboardEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.CharField(max_length=100)
-    # realise with can be multiple
     realise_with = models.ManyToManyField('RealiseWith', blank=True)
 
     def __str__(self):
