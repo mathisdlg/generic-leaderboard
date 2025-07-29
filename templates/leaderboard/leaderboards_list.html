@@ -5,9 +5,18 @@
 {% block h1 %}Leaderboards{% endblock %}
 
 {% block content %}
-    <ul>
+<div class="container mt-4">
+    <div class="row">
         {% for leaderboard in leaderboards %}
-            <li><a href="{% url 'leaderboard_detail' leaderboard.id %}">{{ leaderboard.name }}</a></li>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ leaderboard.name }}</h5>
+                    <a href="{% url 'leaderboard_detail' leaderboard.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
 {% endblock %}

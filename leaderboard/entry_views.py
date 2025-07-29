@@ -1,3 +1,6 @@
+from datetime import datetime
+from re import findall
+
 from django.shortcuts import render, redirect
 from leaderboard.models import Leaderboard, LeaderboardEntry, RealiseWith
 from django.contrib.auth.decorators import login_required
@@ -17,7 +20,25 @@ def add_entry(request, leaderboard_id):
             option_ids = []
 
         if score:
-            entry = LeaderboardEntry(user=request.user, score=score)
+            expr = r"^(\d+)?:?(\d{2}):(\d{2}),?(\d{1,})?$"
+            res = findall(expr,score)
+            timestamp = datetime(1970,1,1)
+            if res:
+                days = 0
+                hours = res[0][0]
+                if res[0][0] and int(res[0][0]) > 23:
+                    days = int(res[0][0])//24
+                    hours = str(int(res[0][0]) % 24)
+                timestamp = datetime(
+                    year = 1970,
+                    month = 1,
+                    day = days + 1,
+                    hour = int(hours) if hours != '' else 0,
+                    minute = int(res[0][1]),
+                    second = int(res[0][2]),
+                    microsecond = int(res[0][3])*pow(10,6-len(res[0][3])) if res[0][3] != '' else 0
+                )
+            entry = LeaderboardEntry(user=request.user, score=timestamp)
             entry.save()
             entry.realise_with.set(RealiseWith.objects.filter(id__in=option_ids))
             leaderboard.entries.add(entry)

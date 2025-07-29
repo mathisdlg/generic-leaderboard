@@ -1,8 +1,8 @@
 {% extends "components/base.html" %}
 
-{% block title %}Edit leaderboard{% endblock %}
+{% block title %}Edit Leaderboard{% endblock %}
 
-{% block h1 %}Edit Leaderboard: {{ leaderboard.name }}{% endblock %}
+{% block h1 %}Edit Leaderboard{% endblock %}
 
 {% block scripts %}
 <script>
@@ -14,7 +14,7 @@
 
     var selectedUsers = [
         {% for user in leaderboard.shared_with_users.all %}
-            {{ user.id }},
+            "{{ user.id }}",
         {% endfor %}
     ];
 
@@ -30,12 +30,13 @@
 
         validationList.innerHTML = '';
         selectedUsers.forEach(userId => {
-            const user = users.find(u => u.id === String(userId));
+            const user = users.find(u => u.id === userId);
             if (user) {
                 const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
                 li.innerHTML = `
-                    <p>${user.username}</p>
-                    <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">Remove</button>
+                    <span>${user.username}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="updateSelectedUsers('${user.id}')">Remove</button>
                 `;
                 validationList.appendChild(li);
             }
@@ -51,8 +52,9 @@
         const filteredUsers = users.filter(user => user.username.toLowerCase().includes(input)).slice(0, 5);
         filteredUsers.forEach(user => {
             const li = document.createElement('li');
+            li.className = 'list-group-item';
             li.innerHTML = `
-                <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100 text-start" onclick="updateSelectedUsers('${user.id}')">
                     ${user.username}
                 </button>
             `;
@@ -63,40 +65,53 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url 'edit_leaderboard' leaderboard.id %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="name">Leaderboard Name:</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ leaderboard.name }}" required>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'edit_leaderboard' leaderboard.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Leaderboard Name:</label>
+                            <input type="text" id="name" name="name" class="form-control" value="{{ leaderboard.name }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea id="description" name="description" class="form-control" rows="3">{{ leaderboard.description }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="search_users" class="form-label">Share with users:</label>
+                            <input type="text" id="search_users" class="form-control" placeholder="Search users..." onkeyup="filterUsers()">
+                            <ul id="user_list" class="list-group mt-2"></ul>
+
+                            <label class="form-label mt-3">Selected Users:</label>
+                            <ul id="selected_users" class="list-group">
+                                {% for user in leaderboard.shared_with_users.all %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>{{ user.username }}</span>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="updateSelectedUsers('{{ user.id }}')">Remove</button>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <input type="hidden" name="shared_with_users" value="{{ leaderboard.shared_with_users.all|join:',' }}">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="public" name="public" value="true" class="form-check-input" title="Everyone will be able to see this leaderboard" {% if leaderboard.is_public %}checked{% endif %}>
+                            <label for="public" class="form-check-label">Public leaderboard:</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Edit Leaderboard</button>
+                            <a href="{% url 'leaderboard_detail' leaderboard.id %}" class="btn btn-secondary">Back to Leaderboard</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" class="form-control">{{ leaderboard.description }}</textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="search_users">Share with users:</label>
-            <input type="text" id="search_users" placeholder="Search users..." onkeyup="filterUsers()"/>
-            <ul id="user_list" class="list-unstyled"></ul>
-
-            <ul class="list-unstyled" id="selected_users">
-                {% for user in leaderboard.shared_with_users.all %}
-                    <li>
-                        <p>{{ user.username }}</p>
-                        <button type="button" class="btn btn-secondary" value="{{ user.id }}" onclick="updateSelectedUsers({{ user.id }})">Remove</button>
-                    </li>
-                {% endfor %}
-            </ul>
-            <input type="hidden" name="shared_with_users" value="{{ leaderboard.shared_with_users.all|join:',' }}" />
-        </div>
-
-        <div class="form-group">
-            <label for="public">Public leaderboard:</label>
-            <input type="checkbox" id="public" name="public" value="true" title="Everyone will be able to see this leaderboard" {% if leaderboard.public %}checked{% endif %}>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Edit leaderboard</button>
-    </form>
-    <button class="btn btn-secondary" onclick="window.location.href='{% url 'leaderboard_detail' leaderboard.id %}'">Back to leaderboard</button>
+    </div>
+</div>
 {% endblock %}
