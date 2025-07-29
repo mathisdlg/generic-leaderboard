@@ -14,7 +14,7 @@
 
     var selectedOptions = [];
 
-    function checkValidTime() {
+    /*function checkValidTime() {
         const value = document.getElementById('value').value
         const timeFormat = /^(\d+:)?\d{2}:\d{2}(,\d{1,})?$/g;
         if (value.match(timeFormat)) {
@@ -22,7 +22,7 @@
         } else {
             document.getElementById('submit').disabled = true;
         }
-    }
+    }*/
 
     function updateSelectedOptions(id) {
         const realiseWithOption = document.querySelector('input[name="realise_with_options"]');
@@ -75,7 +75,8 @@
     {% csrf_token %}
     <div class="form-group">
         <label for="value">Value</label>
-        <input type="text" class="form-control" id="value" name="value" required onkeyup="checkValidTime()">
+        <input type="text" class="form-control" id="value" name="value" required>
+        <!-- <input type="text" class="form-control" id="value" name="value" required onkeyup="checkValidTime()"> -->
     </div>
     <div class="form-group">
         <label for="description">Description</label>
@@ -89,6 +90,7 @@
             <ul class="list-unstyled" id="selected_options"></ul>
             <input type="hidden" name="realise_with_options" value="" />
         </div>
-    <button id="submit" type="submit" class="btn btn-primary" disabled>Add Entry</button>
+        <button id="submit" type="submit" class="btn btn-primary">Add Entry</button>
+    <!-- <button id="submit" type="submit" class="btn btn-primary" disabled>Add Entry</button> -->
 </form>
 {% endblock %}

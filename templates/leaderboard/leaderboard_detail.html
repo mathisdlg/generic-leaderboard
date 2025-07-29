@@ -1,5 +1,5 @@
 {% extends "components/base.html" %}
-{% load format %}
+{# {% load format %} #}
 
 {% block title %}Leaderboard Detail{% endblock %}
 
@@ -40,7 +40,8 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ entry.user.username }}</td>
-                    <td>{{ entry.score|format_score }}</td>
+                    <td>{{ entry.score }}</td>
+                    {# <td>{{ entry.score|format_score }}</td> #}
                     <td>
                         {% if entry.realise_with.all %}
                             {{ entry.realise_with.all|join:", " }}
