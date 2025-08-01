@@ -1,6 +1,6 @@
 {% extends "components/base.html" %}
 
-{% block title %}Create leaderboard{% endblock %}
+{% block title %}Create Leaderboard{% endblock %}
 
 {% block h1 %}Create Leaderboard{% endblock %}
 
@@ -29,9 +29,10 @@
             const user = users.find(u => u.id === String(userId));
             if (user) {
                 const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
                 li.innerHTML = `
-                    <p>${user.username}</p>
-                    <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">Remove</button>
+                    <span>${user.username}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="updateSelectedUsers(${user.id})">Remove</button>
                 `;
                 validationList.appendChild(li);
             }
@@ -47,8 +48,9 @@
         const filteredUsers = users.filter(user => user.username.toLowerCase().includes(input)).slice(0, 5);
         filteredUsers.forEach(user => {
             const li = document.createElement('li');
+            li.className = 'list-group-item';
             li.innerHTML = `
-                <button type="button" class="btn btn-secondary" value="${user.id}" onclick="updateSelectedUsers(${user.id})">
+                <button type="button" class="btn btn-sm btn-outline-secondary w-100 text-start" onclick="updateSelectedUsers(${user.id})">
                     ${user.username}
                 </button>
             `;
@@ -59,33 +61,46 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url 'create_leaderboard' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="name">Leaderboard Name:</label>
-            <input type="text" id="name" name="name" class="form-control" required>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'create_leaderboard' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Leaderboard Name:</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="search_users" class="form-label">Share with users:</label>
+                            <input type="text" id="search_users" class="form-control" placeholder="Search users..." onkeyup="filterUsers()">
+                            <ul id="user_list" class="list-group mt-2"></ul>
+
+                            <label class="form-label mt-3">Selected Users:</label>
+                            <ul id="selected_users" class="list-group"></ul>
+                            <input type="hidden" name="shared_with_users" value="">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="public" name="public" value="true" class="form-check-input" title="Everyone will be able to see this leaderboard">
+                            <label for="public" class="form-check-label">Public leaderboard:</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Create Leaderboard</button>
+                            <a href="{% url 'leaderboards_list' %}" class="btn btn-secondary">Back to Leaderboards</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" class="form-control"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="search_users">Share with users:</label>
-            <input type="text" id="search_users" placeholder="Search users..." onkeyup="filterUsers()"/>
-            <ul id="user_list" class="list-unstyled"></ul>
-
-            <ul class="list-unstyled" id="selected_users"></ul>
-            <input type="hidden" name="shared_with_users" value="" />
-        </div>
-
-        <div class="form-group">
-            <label for="public">Public leaderboard:</label>
-            <input type="checkbox" id="public" name="public" value="true" title="Everyone will be able to see this leaderboard">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Create leaderboard</button>
-    </form>
-    <button class="btn btn-secondary" onclick="window.location.href='{% url 'leaderboards_list' %}'">Back to leaderboards</button>
+    </div>
+</div>
 {% endblock %}

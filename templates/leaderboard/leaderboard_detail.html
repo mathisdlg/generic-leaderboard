@@ -1,72 +1,133 @@
 {% extends "components/base.html" %}
+{#% load bootstrap_icons %#}
+{# {% load format %} #}
 
 {% block title %}Leaderboard Detail{% endblock %}
 
 {% block h1 %}{{ leaderboard.name }}{% endblock %}
 
 {% block content %}
-    <a class="btn btn-primary" href="{% url 'edit_leaderboard' leaderboard.id %}">Edit Leaderboard</a>
-    <a class="btn btn-danger" href="{% url 'delete_leaderboard' leaderboard.id %}">Delete Leaderboard</a>
-    <h2>Entries</h2>
-    <a class="btn btn-primary" href="{% url 'leaderboards_list' %}">Back to leaderboards</a>
-    <a class="btn btn-primary" href="{% url 'add_entry' leaderboard.id %}">Add Entry</a>
-    <label for="nb_by_page">Entries per page:</label>
-    <input type="number" id="nb_by_page" name="nb_by_page" value="{{ nb_by_page }}" min="1" max="100" onchange="window.location.href='?page={{ page_number }}&nb_by_page=' + this.value">
-
-    <ul>
-        {% for entry in entries %}
-            {% if entry.realise_with.all %}
-                <li>{{ entry.user.username }}: {{ entry.score }} (Realised with: {{ entry.realise_with.all|join:", " }})</li>
-            {% else %}
-                <li>{{ entry.user.username }}: {{ entry.score }}</li>
-            {% endif %}
-            <a class="btn btn-danger" href="{% url 'delete_entry' leaderboard.id entry.id %}">Delete Entry</a>
-        {% empty %}
-            <li>No entries yet.</li>
-        {% endfor %}
-    </ul>
-
-    <div class="pagination">
-        {% if page_number > 1 %}
-            <a href="?page={{ page_number|add:-1 }}&nb_by_page={{ nb_by_page }}">Previous</a>
-        {% endif %}
-        <span>Page {{ page_number }} of {{ nb_pages }}</span>
-        {% if page_number < nb_pages %}
-            <a href="?page={{ page_number|add:1 }}&nb_by_page={{ nb_by_page }}">Next</a>
-        {% endif %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-4">
+        <div>
+            <a class="btn btn-primary" href="{% url 'leaderboards_list' %}">Back to leaderboards</a> <!-- TODO: Maybe change this to a back-arrow icon. -->
+            <a class="btn btn-primary" href="{% url 'add_entry' leaderboard.id %}">Add Entry</a>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="{% url 'edit_leaderboard' leaderboard.id %}">Edit Leaderboard</a>
+            <a class="btn btn-danger" href="{% url 'delete_leaderboard' leaderboard.id %}">Delete Leaderboard</a>
+        </div>
     </div>
 
-    <h2>Options</h2>
-    <a class="btn btn-primary" href="{% url 'add_option' leaderboard.id %}">Add Option</a>
-    <ul class="list-unstyled">
-        {% for option in options %}
-            <li>
-                {% if option.description %}
-                    {{ option.name }}: {{ option.description }}
-                {% else %}
-                    {{ option.name }}
-                {% endif %}
-                <a class="btn btn-secondary" href="{% url 'edit_option' leaderboard.id option.id %}">Edit</a>
-                <a class="btn btn-danger" href="{% url 'delete_option' leaderboard.id option.id %}">Delete</a>
-            </li>
-        {% empty %}
-            <li>No options available.</li>
-        {% endfor %}
-    </ul>
+    <div class="mb-4">
+        <label for="nb_by_page" class="form-label">Entries per page:</label>
+        <input type="number" class="form-control" id="nb_by_page" name="nb_by_page" value="{{ nb_by_page }}" min="1" max="100" onchange="window.location.href='?page={{ page_number }}&nb_by_page=' + this.value">
+    </div>
 
-    <h2>Leaderboard Information</h2>
-    <p>Created by: {{ leaderboard.creator.username }}</p>
-    <p>Description: {{ leaderboard.description }}</p>
-    <p>Public: {{ leaderboard.is_public|yesno:"Yes,No" }}</p>
-    <p>Shared with users:
-        {% if leaderboard.shared_with_users.all %}
-            <ul>
-                {% for user in leaderboard.shared_with_users.all %}
-                    <li>{{ user.username }}</li>
+    <h2>Leaderboard</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Realised With</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ entry.user.username }}</td>
+                    <td>{{ entry.score }}</td>
+                    {# <td>{{ entry.score|format_score }}</td> #}
+                    <td>
+                        {% if entry.realise_with.all %}
+                            {{ entry.realise_with.all|join:", " }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_entry' leaderboard.id entry.id %}" class="text-danger">
+                            <i class="bi bi-trash-fill" style="font-size: 1.2rem;"></i>
+                            {#% bs_icon 'trash' color='red' %#}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No entries yet.</td>
+                </tr>
                 {% endfor %}
-            </ul>
-        {% else %}
-            None
-        {% endif %}
-    </p>
+            </tbody>
+        </table>
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if page_number > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number|add:-1 }}&nb_by_page={{ nb_by_page }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Page {{ page_number }} of {{ nb_pages }}</a>
+            </li>
+            {% if page_number < nb_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_number|add:1 }}&nb_by_page={{ nb_by_page }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <h2 class="mt-4">Options</h2>
+    <a class="btn btn-primary mb-3" href="{% url 'add_option' leaderboard.id %}">Add Option</a>
+    <div class="row">
+        {% for option in options %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    {% if option.description %}
+                        <h5 class="card-title">{{ option.name }}</h5>
+                        <p class="card-text">{{ option.description }}</p>
+                    {% else %}
+                        <h5 class="card-title">{{ option.name }}</h5>
+                    {% endif %}
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-secondary" href="{% url 'edit_option' leaderboard.id option.id %}">Edit</a>
+                        <a class="btn btn-danger" href="{% url 'delete_option' leaderboard.id option.id %}">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No options available.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="mt-4">Leaderboard Information</h2>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text"><strong>Created by:</strong> {{ leaderboard.creator.username }}</p>
+            <p class="card-text"><strong>Description:</strong> {{ leaderboard.description }}</p>
+            <p class="card-text"><strong>Public:</strong> <span class="badge bg-{{ leaderboard.is_public|yesno:"success,secondary" }}">{{ leaderboard.is_public|yesno:"Yes,No" }}</span></p>
+            <p class="card-text"><strong>Shared with users:</strong></p>
+            {% if leaderboard.shared_with_users.all %}
+                <ul class="list-group list-group-flush">
+                    {% for user in leaderboard.shared_with_users.all %}
+                        <li class="list-group-item">{{ user.username }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="card-text">None</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
